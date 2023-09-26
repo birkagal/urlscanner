@@ -3,40 +3,14 @@ import logging
 from dotenv import load_dotenv
 from queue import Queue
 from threading import Thread
-from src.iomanager import IOManager
-from src.urlscanner import UrlScanner
-from src.util import create_arg_parser, convert_int_to_logging_level
+from urlscanner.iomanager import IOManager
+from urlscanner.client import UrlScannerClient
+from urlscanner.util import create_arg_parser, convert_int_to_logging_level
 
 NUM_THREADS = 10
 
 
-def main():
-    # Create argparse menu and get program args
-    parser = create_arg_parser()
-    args = parser.parse_args()
-    log_level = convert_int_to_logging_level(args.verbose)
-
-    # Create logging configuration
-    logging.basicConfig(
-        format="%(asctime)s : %(levelname)s : %(message)s", datefmt="%H:%M:%S"
-    )
-
-    # Load the enviorment variable and instantiate the scanner and IO objects
-    load_dotenv()
-    scanner = UrlScanner(os.getenv("API_KEY"), log_level)
-    io = IOManager(log_level)
-
-    # Run program in user specified mode
-    if args.batch_investigate:
-        batch_investigate(scanner, io, args.batch_investigate)
-    elif args.quotas:
-        show_user_quotas(scanner)
-    else:
-        interactive_query(scanner)
-    print("Exiting...")
-
-
-def interactive_query(scanner: UrlScanner) -> None:
+def interactive_query(scanner: UrlScannerClient) -> None:
     print("Welcome to UrlScanner interactive cli tool.\n")
     url = input("Please enter the requested URL: ")
     while True:  # Loop until user provide valid visibility parameter
@@ -65,7 +39,7 @@ def interactive_query(scanner: UrlScanner) -> None:
         )
 
 
-def show_user_quotas(scanner: UrlScanner) -> None:
+def show_user_quotas(scanner: UrlScannerClient) -> None:
     print(
         f"""
     Public visibility:
@@ -91,7 +65,9 @@ def show_user_quotas(scanner: UrlScanner) -> None:
     )
 
 
-def batch_investigate(scanner: UrlScanner, io: IOManager, input_file: str) -> None:
+def batch_investigate(
+    scanner: UrlScannerClient, io: IOManager, input_file: str
+) -> None:
     reports = []  # List of all queries results
     q = Queue()  # Queue that will manage the work
 
@@ -125,4 +101,26 @@ def worker(scanner, q, reports):
 
 
 if __name__ == "__main__":
-    main()
+    # Create argparse menu and get program args
+    parser = create_arg_parser()
+    args = parser.parse_args()
+    log_level = convert_int_to_logging_level(args.verbose)
+
+    # Create logging configuration
+    logging.basicConfig(
+        format="%(asctime)s : %(levelname)s : %(message)s", datefmt="%H:%M:%S"
+    )
+
+    # Load the enviorment variable and instantiate the scanner and IO objects
+    load_dotenv()
+    scanner = UrlScannerClient(os.getenv("API_KEY"), log_level)
+    io = IOManager(log_level)
+
+    # Run program in user specified mode
+    if args.batch_investigate:
+        batch_investigate(scanner, io, args.batch_investigate)
+    elif args.quotas:
+        show_user_quotas(scanner)
+    else:
+        interactive_query(scanner)
+    print("Exiting...")

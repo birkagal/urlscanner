@@ -4,7 +4,7 @@ import requests
 import logging
 
 
-class UrlScanner:
+class UrlScannerClient:
     MAX_POLL_ATTEMPS = 10  # Maximum number of tries to poll from result API
     PAUSE_BETWEEN_POLL = 5  # Time in seconds between each poll
     PAUSE_BEFORE_RESULT = 10  # Time between scan submission and retrieval

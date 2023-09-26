@@ -77,3 +77,6 @@ venv.bak/
 
 # Cython debug symbols
 cython_debug/
+
+# Vscode
+.vscode

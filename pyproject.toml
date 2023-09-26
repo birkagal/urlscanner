@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling", "python-dotenv", "requests"]
+build-backend = "hatchling.build"
+
+[project]
+name = "urlscanner"
+version = "1.0"
+authors = [
+  { name="Gal Birka", email="birkagal@gmail.com" },
+]
+description = "Lightweight Python CLI utility which makes use URLScan.io APIs to automate scanning and retrieving information about URLs"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+  "python-dotenv",
+  "requests",
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/birkagal/urlscanner"
+"Bug Tracker" = "https://github.com/birkagal/urlscanner/issues"
